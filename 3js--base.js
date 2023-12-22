@@ -102,7 +102,7 @@ d3.csv("./scimagojr.csv", function(d) {
 }).then(function(loadedData) {
     data = loadedData; 
 
-    // Mise à jour du choix des années
+    /*--------------- Mise à jour du choix des années ----- */
     selectAnnee.selectAll("option")
               .data(Array.from(new Set(data.map(function(d) { return d.Year; }))))
               .enter()
@@ -110,7 +110,7 @@ d3.csv("./scimagojr.csv", function(d) {
               .attr("value", function(d) { return d; })
               .html(function(d) { return d; });
 
-    // Mise à jour du choix des régions
+    /*--------------- Mise à jour du choix des régions ----- */
     selectRegion.selectAll("option")
                 .data(["Toutes"].concat(Array.from(new Set(data.map(function(d) { return d.Region; })))))
                 .enter()
@@ -149,14 +149,13 @@ function updateDisplay() {
 }
 
 /*------------------------Rendu-------------------------*/
-// Supposons que 'data' est votre jeu de données
 var filteredData = data.filter(d => d.Year === d3.max(data, d => d.Year));
 
-// Échelle de couleurs
+/*--------------- couleurs ----- */
 var colorScale = d3.scaleSequential(d3.interpolateRdYlGn)
                    .domain([1, filteredData.length]);
 
-// Échelles logarithmiques pour les axes
+/*---------------  Échelles logarithmiques des axes ----- */
 var xScale = d3.scaleLog()
                .domain(d3.extent(filteredData, d => d.Documents))
                .range([0, width]);
@@ -164,54 +163,4 @@ var yScale = d3.scaleLog()
                .domain(d3.extent(filteredData, d => d.AverageCitations))
                .range([height, 0]);
 
-// Ajouter les axes (avec d3.axisBottom et d3.axisLeft)
-
-// Création du nuage de points
-var svg = d3.select("svg");
-svg.selectAll("circle")
-   .data(filteredData)
-   .enter()
-   .append("circle")
-   .attr("cx", d => xScale(d.Documents))
-   .attr("cy", d => yScale(d.AverageCitations))
-   .attr("r", d => d.Hindex) // Taille basée sur le H-index
-   .style("fill", d => colorScale(d.Rank));
-
-// Lignes de référence pour les moyennes
-var meanDocuments = d3.mean(filteredData, d => d.Documents);
-var meanCitations = d3.mean(filteredData, d => d.AverageCitations);
-
-svg.append("line")
-   .attr("x1", xScale(meanDocuments))
-   .attr("x2", xScale(meanDocuments))
-   .attr("y1", 0)
-   .attr("y2", height)
-   .style("stroke", "black");
-
-svg.append("line")
-   .attr("y1", yScale(meanCitations))
-   .attr("y2", yScale(meanCitations))
-   .attr("x1", 0)
-   .attr("x2", width)
-   .style("stroke", "black");
-
-// Infobulles pour afficher le nom du pays
-var tooltip = d3.select("body").append("div")
-               .attr("class", "tooltip")
-               .style("opacity", 0);
-
-svg.selectAll("circle")
-   .on("mouseover", function(event, d) {
-       tooltip.transition()
-              .duration(200)
-              .style("opacity", .9);
-       tooltip.html(d.Country)
-              .style("left", (event.pageX) + "px")
-              .style("top", (event.pageY - 28) + "px");
-   })
-   .on("mouseout", function(d) {
-       tooltip.transition()
-              .duration(500)
-              .style("opacity", 0);
-   });
 
