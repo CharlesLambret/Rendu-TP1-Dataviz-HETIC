@@ -1,12 +1,13 @@
 /*-------------------- Initialization and Data Loading -------------------*/
 
 var data;
-var selectAnnee, selectRegion, tbody, svg, xScale, yScale, colorScale, checkboxFlop, formSampleSize;
+var selectAnnee, selectRegion, tbody, svg, xScale, yScale, colorScale, checkboxFlop, formSampleSize, tooltipDiv;
 
 function initialize() {
     setupSelectors();
     setupTableau();
     setupNuagedePoints();
+    setupTooltip();
     updateVisualizations();
 }
 
@@ -115,6 +116,21 @@ function setupNuagedePoints() {
         .text("Nombre Moyen de Citations par Document");
 }
 
+function setupTooltip() {
+    // Set up a tooltip div
+    tooltipDiv = d3.select("body").append("div")
+        .attr("id", "tooltip")
+        .style("opacity", 0)
+        .style("position", "absolute")
+        .style("text-align", "left")
+        .style("padding", "8px")
+        .style("background", "rgba(255, 255, 255, 0.85)")
+        .style("border", "solid")
+        .style("border-width", "2px")
+        .style("border-radius", "5px")
+        .style("pointer-events", "none");
+}
+
 function updateTableau() {
     var selectedYear = selectAnnee.node().value;
     var selectedRegion = selectRegion.node().value;
@@ -159,12 +175,19 @@ function updateNuagedePoints() {
         .merge(circles)
         .on("mouseover", function(event, d) {
             d3.select(this).attr("stroke", "black").attr("stroke-width", 2);
-            // Display country name on hover
+            
+            // Update tooltip content
             d3.select("#tooltip")
+                .html(
+                    `<strong>Country:</strong> ${d.Country}<br>` +
+                    `<strong>Documents:</strong> ${d.Documents}<br>` +
+                    `<strong>Average Citations:</strong> ${d.Citations/d.Documents}<br>` + // Assuming you want the average citations per document
+                    `<strong>Total Citations:</strong> ${d.Citations}<br>` +
+                    `<strong>H-index:</strong> ${d.Hindex}`
+                )
                 .style("left", event.pageX + "px")
                 .style("top", event.pageY - 28 + "px")
-                .style("opacity", 1)
-                .text(d.Country);
+                .style("opacity", 1);
         })
         .on("mouseout", function() {
             d3.select(this).attr("stroke", "none");
