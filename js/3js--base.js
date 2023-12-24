@@ -89,7 +89,7 @@ function generateRow(d) {
 /*---------------Récupération des données--------------*/
 var data; 
 
-d3.csv("./scimagojr.csv", function(d) {
+d3.csv("./data/scimagojr.csv", function(d) {
     return {
         Year: parseInt(d.Year),
         Rank: parseInt(d.Rank),
