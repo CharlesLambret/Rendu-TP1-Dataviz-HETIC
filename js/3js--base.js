@@ -148,19 +148,4 @@ function updateDisplay() {
         
 }
 
-/*------------------------Rendu-------------------------*/
-var filteredData = data.filter(d => d.Year === d3.max(data, d => d.Year));
-
-/*--------------- couleurs ----- */
-var colorScale = d3.scaleSequential(d3.interpolateRdYlGn)
-                   .domain([1, filteredData.length]);
-
-/*---------------  Échelles logarithmiques des axes ----- */
-var xScale = d3.scaleLog()
-               .domain(d3.extent(filteredData, d => d.Documents))
-               .range([0, width]);
-var yScale = d3.scaleLog()
-               .domain(d3.extent(filteredData, d => d.AverageCitations))
-               .range([height, 0]);
-
 
