@@ -26,3 +26,23 @@
 #top tbody tr:nth-child(odd) {
     background-color: lightblue;
 }
+
+.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 60px;
+    height: 28px;
+    padding: 2px;
+    font: 12px sans-serif;
+    border: 0px;
+    border-radius: 15px;
+    pointer-events: none;
+    font-weight:bold;
+}
+#nuage {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90vw;
+    height: 90vh;
+}
