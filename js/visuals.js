@@ -1,7 +1,7 @@
 function updateTableau() {
     var selectedYear = selectAnnee.node().value;
     var selectedRegion = selectRegion.node().value;
-    var isFlop = checkboxFlop.node().checked;
+    var isFlop = d3.select('input[name="topflop"]:checked').node().value === "flop"; // Updated line
     var selectedSize = parseInt(d3.select('input[name="sampleSize"]:checked').node().value);
 
     var filteredData = aggregateAndFilterData(selectedYear, selectedRegion, isFlop);
@@ -16,10 +16,11 @@ function updateTableau() {
         .html(d => `<td>${d.Country}</td><td>${d.Region}</td><td>${d.Rank}</td><td>${d.Documents}</td><td>${d.Citations}</td><td>${d.Hindex}</td>`);
 }
 
+
 function updateNuagedePoints() {
     var selectedYear = selectAnnee.node().value;
     var selectedRegion = selectRegion.node().value;
-    var isFlop = checkboxFlop.node().checked;
+    var isFlop = d3.select('input[name="topflop"]:checked').node().value === "flop"; // Updated line
     var selectedSize = parseInt(d3.select('input[name="sampleSize"]:checked').node().value);
 
     var filteredData = aggregateAndFilterData(selectedYear, selectedRegion, isFlop);

@@ -1,57 +1,73 @@
 function setupSelectors() {
     var sampleSizes = [5, 10, 20, 50];
-    formSampleSize = d3.select("#top").append("form").attr("class", "sample-size");
+    formSampleSize = d3.select("#btnsradio")
+                        .append("form")
+                        .attr("class", "sample-size d-flex flex-wrap");
+
     formSampleSize.selectAll("label")
         .data(sampleSizes)
         .enter()
         .append("label")
-        .text(d => `${d} Countries`)
+        .text(d => `${d} Pays`)
         .append("input")
         .attr("type", "radio")
+        .attr("class", "m-2")
         .attr("name", "sampleSize")
         .attr("value", d => d)
         .property("checked", (d, i) => i === 0) 
         .on("change", updateVisualizations);
     
-    selectAnnee = d3.select("#top").append("select")
+    selectAnnee = d3.select("#filtres").append("select")
         .attr("id", "choix_annee")
+        .attr("class", "m-2")
         .on("change", updateVisualizations);
     selectAnnee.selectAll("option")
         .data(["All"].concat(Array.from(new Set(data.map(d => d.Year)))))
         .enter()
         .append("option")
         .attr("value", d => d)
-        .text(d => d === "All" ? "All Years" : d);
+        .text(d => d === "All" ? "Toutes les années" : d);
 
-    selectRegion = d3.select("#top").append("select")
+    selectRegion = d3.select("#filtres").append("select")
         .attr("id", "choix_region")
+        .attr("class", "m-2")
         .on("change", updateVisualizations);
+        
     selectRegion.selectAll("option")
         .data(["All"].concat(Array.from(new Set(data.map(d => d.Region)))))
         .enter()
         .append("option")
         .attr("value", d => d)
-        .text(d => d);
+        .text(d => d === "All" ? "Toutes les régions du monde" : d);
 
-    tbody = d3.select("#top")
+    tbody = d3.select("#top-flop")
         .append("table")
         .append("tbody");
 
-    var form = d3.select("#top").append("form").attr("class", "choix");
-    var fieldset = form.append("fieldset");
+    var form = d3.select("#top-flop").append("form").attr("class", "choix d-flex flex-row");
+    var fieldset = form.append("fieldset").attr("class", "d-flex flex-row");
+    
 
-    fieldset.append("legend").text("Choisir si vous souhaitez un FLOP");
-    checkboxFlop = fieldset.append("label")
-        .text("FLOP")
-        .append("input")
-        .attr("type", "checkbox")
-        .attr("name", "flop")
-        .property("checked", false) 
+    var labelTop = fieldset.append("label").attr("class", "d-flex flex-row align-items-center").text("TOP");
+    labelTop.append("input")
+        .attr("type", "radio")
+        .attr("name", "topflop")
+        .attr("class","m-2")
+        .attr("value", "top")
+        .property("checked", true)  
         .on("change", updateVisualizations);
+        
+    var labelFlop = fieldset.append("label").attr("class", "d-flex flex-row align-items-center").text("FLOP");
+    labelFlop.append("input")
+            .attr("type", "radio")
+            .attr("name", "topflop")
+            .attr("class","m-2")
+            .attr("value", "flop")
+            .on("change", updateVisualizations);
 }
 
 function setupTableau() {
-    var table = d3.select("#table").append("table").attr("class", "table");
+    var table = d3.select("#table").append("table").attr("class", "table table-hover");
     table.append("thead")
         .append("tr").attr("scope", "row")
         .selectAll("th").attr("scope", "col")
@@ -84,6 +100,7 @@ function setupNuagedePoints() {
     svg.append("text")
         .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.top + 20) + ")")
         .style("text-anchor", "middle")
+        .style("fill", "white")
         .text("Nombre de Documents");
 
     svg.append("text")
@@ -92,6 +109,7 @@ function setupNuagedePoints() {
         .attr("x", 0 - (height / 2))
         .attr("dy", "1em")
         .style("text-anchor", "middle")
+        .style("fill", "white")
         .text("Nombre Moyen de Citations par Document");
 }
 
