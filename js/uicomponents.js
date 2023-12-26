@@ -33,10 +33,13 @@ function setupSelectors() {
         .attr("value", d => d)
         .text(d => d);
 
-    tbody = d3.select("#top").append("table").append("tbody");
+    tbody = d3.select("#top")
+        .append("table")
+        .append("tbody");
 
     var form = d3.select("#top").append("form").attr("class", "choix");
     var fieldset = form.append("fieldset");
+
     fieldset.append("legend").text("Choisir si vous souhaitez un FLOP");
     checkboxFlop = fieldset.append("label")
         .text("FLOP")
@@ -48,10 +51,10 @@ function setupSelectors() {
 }
 
 function setupTableau() {
-    var table = d3.select("#top").append("table");
+    var table = d3.select("#table").append("table").attr("class", "table");
     table.append("thead")
-        .append("tr")
-        .selectAll("th")
+        .append("tr").attr("scope", "row")
+        .selectAll("th").attr("scope", "col")
         .data(["Pays", "Région", "Rang", "Documents", "Citations", "H-index"])
         .enter()
         .append("th")
