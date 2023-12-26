@@ -20,6 +20,7 @@ function getFilteredData(){
 
 function updateTableau() {
     var data = getFilteredData();
+    data.sort((a, b) => a.Rank - b.Rank);
     var rows = tbody.selectAll("tr").data(data);
     rows.exit().remove();
     rows.enter()
@@ -27,7 +28,7 @@ function updateTableau() {
         .merge(rows)
         .html(d => `<td>${d.Country}</td>
                     <td>${d.Region}</td>
-                    <td>${Math.round(d.Rank)}</td>
+                    <td>${d.Rank}</td>
                     <td>${d.Documents}</td>
                     <td>${d.Citations}</td>
                     <td>${d.Hindex}</td>`);

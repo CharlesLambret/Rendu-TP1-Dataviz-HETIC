@@ -4,7 +4,7 @@ function aggregateDataAcrossYears(data) {
             Documents: d3.sum(v, d => d.Documents),
             Citations: d3.sum(v, d => d.Citations),
             Hindex: d3.max(v, d => d.Hindex),
-            Rank: d3.mean(v, d => d.Rank) 
+            Rank: d3.median(v, d => d.Rank)  
         }), 
         d => d.Country); 
 
