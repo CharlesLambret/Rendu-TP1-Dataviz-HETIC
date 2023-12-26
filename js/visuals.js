@@ -1,36 +1,45 @@
-function updateTableau() {
+
+
+function getFilteredData(){
     var selectedYear = selectAnnee.node().value;
     var selectedRegion = selectRegion.node().value;
-    var isFlop = d3.select('input[name="topflop"]:checked').node().value === "flop"; // Updated line
-    var selectedSize = parseInt(d3.select('input[name="sampleSize"]:checked').node().value);
+    var isFlop = d3.select('input[name="topflop"]:checked').node().value === "flop"; 
+    var selectedSize = d3.select('input[name="sampleSize"]:checked').node().value;
 
-    var filteredData = aggregateAndFilterData(selectedYear, selectedRegion, isFlop);
+    selectedSize = selectedSize === "All" ? Infinity : parseInt(selectedSize);
 
-    filteredData = filteredData.slice(0, selectedSize);
+    var searchTerm = d3.select("#searchInput").node().value.trim().toLowerCase();
 
-    var rows = tbody.selectAll("tr").data(filteredData);
+    var data = aggregateAndFilterData(selectedYear, selectedRegion, isFlop);
+    data = data.filter(d => d.Country.toLowerCase().includes(searchTerm));
+    data = data.slice(0, selectedSize);
+
+
+    return(data)
+} 
+
+function updateTableau() {
+    var data = getFilteredData();
+    var rows = tbody.selectAll("tr").data(data);
     rows.exit().remove();
     rows.enter()
         .append("tr")
         .merge(rows)
-        .html(d => `<td>${d.Country}</td><td>${d.Region}</td><td>${d.Rank}</td><td>${d.Documents}</td><td>${d.Citations}</td><td>${d.Hindex}</td>`);
+        .html(d => `<td>${d.Country}</td>
+                    <td>${d.Region}</td>
+                    <td>${Math.round(d.Rank)}</td>
+                    <td>${d.Documents}</td>
+                    <td>${d.Citations}</td>
+                    <td>${d.Hindex}</td>`);
 }
 
 
 function updateNuagedePoints() {
-    var selectedYear = selectAnnee.node().value;
-    var selectedRegion = selectRegion.node().value;
-    var isFlop = d3.select('input[name="topflop"]:checked').node().value === "flop"; // Updated line
-    var selectedSize = parseInt(d3.select('input[name="sampleSize"]:checked').node().value);
+    var data = getFilteredData();
+    xScale.domain([d3.min(data, d => d.Documents) || 1, d3.max(data, d => d.Documents) || 100]);
+    yScale.domain([d3.min(data, d => d.Citations) || 0.1, d3.max(data, d => d.Citations) || 100]);
 
-    var filteredData = aggregateAndFilterData(selectedYear, selectedRegion, isFlop);
-
-    filteredData = filteredData.slice(0, selectedSize);
-
-    xScale.domain([d3.min(filteredData, d => d.Documents) || 1, d3.max(filteredData, d => d.Documents) || 100]);
-    yScale.domain([d3.min(filteredData, d => d.Citations) || 0.1, d3.max(filteredData, d => d.Citations) || 100]);
-
-    var circles = svg.selectAll("circle").data(filteredData);
+    var circles = svg.selectAll("circle").data(data);
     circles.enter()
         .append("circle")
         .merge(circles)
@@ -58,6 +67,7 @@ function updateNuagedePoints() {
         .attr("cx", d => xScale(d.Documents))
         .attr("cy", d => yScale(d.Citations))
         .attr("r", d => Math.sqrt(d.Hindex))
+        .attr("fill-opacity", 0.7)
         .style("fill", d => colorScale(d.Hindex));
 
     circles.exit().remove();
@@ -66,4 +76,5 @@ function updateNuagedePoints() {
 function updateVisualizations() {
     updateTableau();
     updateNuagedePoints();
+    
 }

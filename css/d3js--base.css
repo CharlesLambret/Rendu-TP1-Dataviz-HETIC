@@ -39,10 +39,14 @@
     pointer-events: none;
     font-weight:bold;
 }
+
+#nuageContainer {
+    height: 90vh; 
+}
 #nuage {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 90vw;
-    height: 90vh;
+    width: 100%;
+    height: 100%;
 }

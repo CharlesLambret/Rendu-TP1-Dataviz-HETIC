@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function initialize() {
     setupSelectors();
+    setupRecherche()
     setupTableau();
     setupNuagedePoints();
     setupTooltip();

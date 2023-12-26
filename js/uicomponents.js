@@ -1,5 +1,5 @@
 function setupSelectors() {
-    var sampleSizes = [5, 10, 20, 50];
+    var sampleSizes = [5, 10, 20, 50, "All"];
     formSampleSize = d3.select("#btnsradio")
                         .append("form")
                         .attr("class", "sample-size d-flex flex-wrap");
@@ -8,10 +8,11 @@ function setupSelectors() {
         .data(sampleSizes)
         .enter()
         .append("label")
-        .text(d => `${d} Pays`)
+        .attr("class", "form-check-label")
+        .text(d => d === "All" ? "Tous les pays" : `${d} Pays`)
         .append("input")
         .attr("type", "radio")
-        .attr("class", "m-2")
+        .attr("class", "form-check-input m-2")
         .attr("name", "sampleSize")
         .attr("value", d => d)
         .property("checked", (d, i) => i === 0) 
@@ -52,7 +53,7 @@ function setupSelectors() {
     labelTop.append("input")
         .attr("type", "radio")
         .attr("name", "topflop")
-        .attr("class","m-2")
+        .attr("class","form-check-input m-2")
         .attr("value", "top")
         .property("checked", true)  
         .on("change", updateVisualizations);
@@ -61,9 +62,22 @@ function setupSelectors() {
     labelFlop.append("input")
             .attr("type", "radio")
             .attr("name", "topflop")
-            .attr("class","m-2")
+            .attr("class","form-check-input m-2")
             .attr("value", "flop")
             .on("change", updateVisualizations);
+}
+
+function setupRecherche() {
+    var controls = d3.select("#top");
+
+    controls.append("input")
+        .attr("id", "searchInput")
+        .attr("type", "text")
+        .attr("class", "col-md-6 align-self-center")
+        .attr("placeholder", "Recherchez le nom d'un pays...")
+        .on("input", function() {
+            updateVisualizations();
+        });
 }
 
 function setupTableau() {
@@ -81,9 +95,10 @@ function setupTableau() {
 
 function setupNuagedePoints() {
     colorScale = d3.scaleSequential(d3.interpolateRdYlGn).domain([1, 100]);
-    var margin = {top: 10, right: 30, bottom: 30, left: 40},
-    width = window.innerWidth * 0.90 - margin.left - margin.right, 
-    height = window.innerHeight * 0.90 - margin.top - margin.bottom;
+    var margin = {top: 10, right: 30, bottom: 30, left: 40};
+    var nuageContainer = document.getElementById('nuageContainer');
+    var width = nuageContainer.clientWidth - margin.left - margin.right;
+    var height = width ;
 
     svg = d3.select("#nuage").append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -124,5 +139,7 @@ function setupTooltip() {
         .style("border", "solid")
         .style("border-width", "2px")
         .style("border-radius", "5px")
+        .style("color", "black")
         .style("pointer-events", "none");
+        
 }
